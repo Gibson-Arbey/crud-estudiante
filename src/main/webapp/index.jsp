@@ -25,9 +25,9 @@
 	                    <h3 class="text-center">Listado de Estudiantes</h3>
 	                    <hr>
 	                    <div class="container text-left">
-							
 	                        <a href="<%=request.getContextPath()%>/Nuevo_estudiante" class="btn btn-success" style="background-color:#343a40; border:none">Inscribir estudiante</a>
-	                    </div>
+	                    	<a href="<%=request.getContextPath()%>/Ver_estudiante" class="btn btn-success" style="background-color:#343a40; border:none">Ver estudiante</a>
+	                    	</div>
 	                    <br>
 	                    <table class="table table-sm table-bordered " Style="text-align:center" >
 	                        <thead>
@@ -78,16 +78,9 @@
 	                                    </td>
 	                                    <td><a href="edit?id=<c:out value='${est.id}' />" style="color:#343a40; text-decoration:underline">Editar</a> &nbsp;&nbsp;&nbsp;&nbsp; <a href="delete?id=<c:out value='${est.id}' />" style="color:#343a40; text-decoration:underline">Eliminar</a></td>
 	                                </tr>
-	                            </c:forEach>
+	                            </c:forEach> 
 		                	</tbody>
 		    	        </table>
-		    	        <br>
-		    	        <c:set var="esMasJoven" value="${esMasJoven}"/>
-		    	        <c:set var="esMasViejo" value="${esMasViejo}"/>
-		    	        <ul>
-							  <li>Codigo del estudiante más joven: ${esMasJoven}</li>
-							  <li>Codigo del estudiante más viejo: ${esMasViejo}</li>  
-						</ul>
 		        	</div>
 		    </div>
 	</body>

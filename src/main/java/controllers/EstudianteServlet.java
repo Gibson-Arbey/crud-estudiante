@@ -25,7 +25,9 @@ public class EstudianteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
     
 	private EstudianteDao eDao;
-	DateTimeFormatter format; 
+	private DateTimeFormatter format; 
+	private Estudiante esMasJoven;
+	private Estudiante esMasViejo; 
 	
     /**
      * @see HttpServlet#HttpServlet()
@@ -38,17 +40,24 @@ public class EstudianteServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
     	this.format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		this.eDao = new EstudianteDao(); 
+		esMasJoven = new Estudiante();
+		esMasJoven.setFecha_nacimiento(LocalDate.of(1, 12, 31));
+		esMasViejo = new Estudiante();
+		esMasViejo.setFecha_nacimiento(LocalDate.of(9999, 12, 31));
 		
 	}
+    
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String action = request.getServletPath();
 		try {
 			switch(action) {
 			case"/Nuevo_estudiante": showPage(request, response, "nuevoEstudiante.jsp");
+				break;
+			case"/Ver_estudiante": showPage(request, response, "view.jsp");
 				break;
 			case"/delete": eliminarEstudiante(request, response);
 				break;
@@ -76,7 +85,14 @@ public class EstudianteServlet extends HttpServlet {
 	
 	private void showPage(HttpServletRequest request, HttpServletResponse response, String pag) 
 			throws ServletException, IOException {
-		 request.getRequestDispatcher(pag).forward(request, response);
+		if(pag=="view.jsp") {
+			try {
+				mostrar(request, response);
+			} catch(SQLException e) {
+				throw new ServletException(e);
+			}
+		}
+		request.getRequestDispatcher(pag).forward(request, response);
 	}
 	
 	private void  showEditForm(HttpServletRequest request, HttpServletResponse response) 
@@ -138,10 +154,6 @@ public class EstudianteServlet extends HttpServlet {
 			throws ServletException, SQLException, IOException {
 		List<Estudiante> listEst = new ArrayList<>();
 		listEst = eDao.list(); 
-		Estudiante esMasJoven = new Estudiante();
-		esMasJoven.setFecha_nacimiento(LocalDate.of(1, 12, 31));
-		Estudiante esMasViejo = new Estudiante();
-		esMasViejo.setFecha_nacimiento(LocalDate.of(9999, 12, 31));
 		for(Estudiante es: listEst) {
 			es.setPromedio();
 			es.setEdad();
@@ -152,10 +164,16 @@ public class EstudianteServlet extends HttpServlet {
 				esMasViejo = es;
             }
 		}
-		request.setAttribute("esMasJoven", esMasJoven.getId());
-		request.setAttribute("esMasViejo", esMasViejo.getId());
+		
 		request.setAttribute("listEstudiantes", listEst);
 		showPage(request, response,"index.jsp");
 	}
 	
+	private void mostrar(HttpServletRequest request, HttpServletResponse response)  
+			throws ServletException, SQLException, IOException {
+		request.setAttribute("esMasJoven", esMasJoven);
+		request.setAttribute("esMasViejo", esMasViejo);
+	}
 }
+	
+	
